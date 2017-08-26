@@ -8,19 +8,19 @@ import (
 	"github.com/carbocation/pfx"
 )
 
-type MutexCSV struct {
+type CSVMutex struct {
 	mutex  *sync.Mutex
 	Writer *csv.Writer
 }
 
-func NewMutexCSV(writer io.Writer) *MutexCSV {
-	return &MutexCSV{
+func NewCSVMutex(writer io.Writer) *CSVMutex {
+	return &CSVMutex{
 		Writer: csv.NewWriter(writer),
 		mutex:  &sync.Mutex{},
 	}
 }
 
-func (c *MutexCSV) Write(row []string) error {
+func (c *CSVMutex) Write(row []string) error {
 	c.mutex.Lock()
 	if err := c.Writer.Write(row); err != nil {
 		c.mutex.Unlock()
@@ -31,7 +31,7 @@ func (c *MutexCSV) Write(row []string) error {
 	return nil
 }
 
-func (c *MutexCSV) Flush() {
+func (c *CSVMutex) Flush() {
 	c.mutex.Lock()
 	c.Writer.Flush()
 	c.mutex.Unlock()
